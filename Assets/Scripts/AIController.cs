@@ -8,6 +8,7 @@ public class AIController : MonoBehaviour
     public float pointDistance = 5;
 
     public GameObject _targetObj;
+    private Transform _targetTransform;
     private float _bypassAngle;
     private Vector3 _targetLocation;
     private Rigidbody _rb;
@@ -20,8 +21,9 @@ public class AIController : MonoBehaviour
         if (!GetComponent<Rigidbody>()) gameObject.AddComponent<Rigidbody>();
         _rb = gameObject.GetComponent<Rigidbody>();
         _rb.useGravity = false;
+        _targetTransform = _targetObj.transform;
         FindTarget();
-        _bypassAngle = Random.Range(0, 360);
+        BypassTargetGeneration();
     }
 
     void FindTarget()
@@ -32,7 +34,12 @@ public class AIController : MonoBehaviour
 
     void Update()
     {
-        _rb.AddForce(CalculateForces(_targetObj.transform.position + BypassTarget()));
+        /*if (Vector3.Angle(_targetRb.velocity, _rb.velocity) >= 100)
+        {
+            BypassTargetBehaviour();
+        }*/
+        BypassTargetBehaviour();
+
         transform.LookAt(transform.position + _rb.velocity);
     }
 
@@ -48,17 +55,25 @@ public class AIController : MonoBehaviour
         return relativePos;
     }
 
-    /*Vector3 PursueTarget()
+    void PursueTargetBehaviour()
     {
+        _rb.AddForce(CalculateForces(_targetTransform.position + (_targetTransform.forward * 5)));
+    }
 
-    }*/
-
-    Vector3 BypassTarget()
+    void BypassTargetBehaviour()
     {
+        if (Vector3.Distance(transform.position, _targetTransform.position + _targetLocation) <= 0.5f) BypassTargetGeneration();
+        _rb.AddForce(CalculateForces(_targetTransform.position +_targetLocation));
+    }
+
+    void BypassTargetGeneration()
+    {
+        _bypassAngle = Random.Range(0, 360);
         Vector3 relativeAngle = Vector3.zero;
         relativeAngle += transform.right * Mathf.Sin(_bypassAngle) * pointDistance;
         relativeAngle += transform.up * Mathf.Cos(_bypassAngle) * pointDistance;
-        return relativeAngle;
+        _targetLocation = relativeAngle;
+        Debug.Log(_targetLocation);
     }
 
     void ShootTarget()
@@ -69,6 +84,8 @@ public class AIController : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawCube(_targetObj.transform.position + BypassTarget(), Vector3.one);
+        Gizmos.DrawCube(_targetTransform.position + _targetLocation, Vector3.one);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawCube(_targetTransform.position, Vector3.one);
     }
 }
