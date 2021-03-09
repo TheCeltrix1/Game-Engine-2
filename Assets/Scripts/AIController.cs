@@ -74,7 +74,6 @@ public class AIController : MonoBehaviour
         relativeAngle += transform.right * Mathf.Sin(_bypassAngle) * pointDistance;
         relativeAngle += transform.up * Mathf.Cos(_bypassAngle) * pointDistance;
         _targetLocation = relativeAngle;
-        Debug.Log(_targetLocation);
     }
 
     void ShootTarget()
@@ -85,9 +84,9 @@ public class AIController : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.red;
+        /*Gizmos.color = Color.red;
         Gizmos.DrawCube(_targetTransform.position + _targetLocation, Vector3.one);
         Gizmos.color = Color.blue;
-        Gizmos.DrawCube(_targetTransform.position, Vector3.one);
+        Gizmos.DrawCube(_targetTransform.position, Vector3.one);*/
     }
 }

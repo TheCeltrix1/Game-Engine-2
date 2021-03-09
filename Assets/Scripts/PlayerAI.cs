@@ -8,6 +8,7 @@ public class PlayerAI : MonoBehaviour
     public int currentTarget;
 
     private float _maxSpeed = 2.5f;
+    private float _banking = 0.5f;
     private Rigidbody _rb;
 
     private void Awake()
@@ -23,26 +24,29 @@ public class PlayerAI : MonoBehaviour
 
     private void Update()
     {
-        transform.LookAt(transform.position - _rb.velocity);
-        MoveToPoint();
+        MoveToPoint(targets[currentTarget].position);
     }
 
     #region Behaviours
     private Vector3 CalculateForces(Vector3 targetPos)
     {
-        Vector3 force = Vector3.zero;
-
         Vector3 relativePos = targetPos - transform.position;
         relativePos.Normalize();
-        relativePos *= _maxSpeed;
-        relativePos -= _rb.velocity;
+        relativePos *= (_maxSpeed/2);
+        //relativePos -= _rb.velocity;
 
         return relativePos;
     }
 
-    private void MoveToPoint()
+    private void MoveToPoint(Vector3 targetPos)
     {
-        _rb.AddForce(CalculateForces(targets[currentTarget].position));
+        Vector3 point = CalculateForces(targetPos);
+        _rb.AddForce(point);
+        _rb.velocity = Vector3.ClampMagnitude(_rb.velocity,_maxSpeed);
+        
+        Vector3 tempUp = Vector3.Lerp(transform.up, Vector3.up + (point * _banking), Time.deltaTime * 1.0f);
+        transform.LookAt(transform.position + _rb.velocity, tempUp);
+
         if (Vector3.Distance(this.transform.position, targets[currentTarget].position) <= .5f)
         {
             if (currentTarget < targets.Length - 1)
