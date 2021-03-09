@@ -8,7 +8,7 @@ public class PlayerAI : MonoBehaviour
     public int currentTarget;
 
     private float _maxSpeed = 2.5f;
-    private float _banking = 0.5f;
+    private float _banking = 0.1f;
     private Rigidbody _rb;
 
     private void Awake()
@@ -44,7 +44,7 @@ public class PlayerAI : MonoBehaviour
         _rb.AddForce(point);
         _rb.velocity = Vector3.ClampMagnitude(_rb.velocity,_maxSpeed);
         
-        Vector3 tempUp = Vector3.Lerp(transform.up, Vector3.up + (point * _banking), Time.deltaTime * 1.0f);
+        Vector3 tempUp = Vector3.Lerp(transform.up, Vector3.up + (targetPos * _banking), Time.deltaTime * 1.0f);
         transform.LookAt(transform.position + _rb.velocity, tempUp);
 
         if (Vector3.Distance(this.transform.position, targets[currentTarget].position) <= .5f)
