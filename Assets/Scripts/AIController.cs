@@ -55,6 +55,7 @@ public class AIController : MonoBehaviour
         return relativePos;
     }
 
+    #region Behaviours
     void PursueTargetBehaviour()
     {
         _rb.AddForce(CalculateForces(_targetTransform.position + (_targetTransform.forward * 5)));
@@ -80,6 +81,7 @@ public class AIController : MonoBehaviour
     {
         Debug.Log("Pew Pew!");
     }
+    #endregion
 
     private void OnDrawGizmos()
     {

@@ -5,9 +5,10 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static List<GameObject> players = new List<GameObject>();
-
     private static GameManager _instance;
     public static GameManager Instance { get { return _instance; } }
+
+    private static int _sceneNumber = 0;
 
 
     private void Awake()
@@ -22,12 +23,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public static void AddObject(GameObject obj)
+    #region PlayerObjects
+    public static void AddPlayerObject(GameObject obj)
     {
         players.Add(obj);
     }
 
-    public static void RemoveObject(GameObject obj)
+    public static void RemovePlayerObject(GameObject obj)
     {
         players.Remove(obj);
     }
@@ -46,5 +48,21 @@ public class GameManager : MonoBehaviour
             }
         }
         return nearest;
+    }
+    #endregion
+
+    public static void NextScene()
+    {
+        _sceneNumber++;
+        switch (_sceneNumber)
+        {
+            case 1:
+
+                break;
+
+            default:
+                break;
+        }
+
     }
 }
