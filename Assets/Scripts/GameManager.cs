@@ -6,13 +6,19 @@ public class GameManager : MonoBehaviour
 {
     public static List<GameObject> players = new List<GameObject>();
     private static GameManager _instance;
-    public static GameManager Instance { get { return _instance; } }
-
     private static int _sceneNumber = 0;
+    private static Rigidbody _rb;
+
+    #region Scene1
+    private float _cameraVelocity = 0.5f;
+    #endregion
+
+    public static GameManager Instance { get { return _instance; } }
 
 
     private void Awake()
     {
+        _rb = Camera.main.gameObject.GetComponent<Rigidbody>();
         if (_instance != null && _instance != this)
         {
             Destroy(this.gameObject);
@@ -21,6 +27,7 @@ public class GameManager : MonoBehaviour
         {
             _instance = this;
         }
+        Scene1();
     }
 
     #region PlayerObjects
@@ -64,5 +71,10 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
+    }
+
+    private void Scene1()
+    {
+        _rb.velocity = new Vector3(0,0, -_cameraVelocity);
     }
 }

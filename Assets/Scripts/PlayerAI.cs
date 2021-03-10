@@ -7,7 +7,7 @@ public class PlayerAI : MonoBehaviour
     public Transform[] targets;
     public int currentTarget;
 
-    private float _maxSpeed = 2.5f;
+    private float _maxSpeed = 4.5f;
     private float _banking = 0.1f;
     private Rigidbody _rb;
 
@@ -18,7 +18,6 @@ public class PlayerAI : MonoBehaviour
         {
             _rb = gameObject.AddComponent<Rigidbody>();
             _rb.useGravity = false;
-            //_rb.constraints = RigidbodyConstraints.FreezeRotation;
         }
     }
 
@@ -33,7 +32,6 @@ public class PlayerAI : MonoBehaviour
         Vector3 relativePos = targetPos - transform.position;
         relativePos.Normalize();
         relativePos *= (_maxSpeed/2);
-        //relativePos -= _rb.velocity;
 
         return relativePos;
     }
@@ -44,16 +42,15 @@ public class PlayerAI : MonoBehaviour
         _rb.AddForce(point);
         _rb.velocity = Vector3.ClampMagnitude(_rb.velocity,_maxSpeed);
         
-        Vector3 tempUp = Vector3.Lerp(transform.up, Vector3.up + (targetPos * _banking), Time.deltaTime * 1.0f);
+        Vector3 tempUp = Vector3.Lerp(transform.up, Vector3.up + (targetPos - transform.position), Time.deltaTime * 1.0f);
         transform.LookAt(transform.position + _rb.velocity, tempUp);
 
-        if (Vector3.Distance(this.transform.position, targets[currentTarget].position) <= .5f)
+        if (Vector3.Distance(this.transform.position, targets[currentTarget].position) <= 1f)
         {
             if (currentTarget < targets.Length - 1)
             {
                 currentTarget++;
             }
-            else Debug.Log("Targets Reached");
         }
     }
     #endregion
