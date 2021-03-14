@@ -197,7 +197,7 @@ GameObject:
   m_Component:
   - component: {fileID: 135929314}
   m_Layer: 0
-  m_Name: SIlverBoltTargets
+  m_Name: SilverBoltTargets
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -941,7 +941,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lookAt: {fileID: 1277779439}
   waypoints: {fileID: 618778529}
-  speed: 5
+  speed: 10
 --- !u!1 &829366824
 GameObject:
   m_ObjectHideFlags: 0
