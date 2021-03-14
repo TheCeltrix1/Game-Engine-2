@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class PlayerAI : MonoBehaviour
 {
-    public Transform[] targets;
+    public Transform targetHolder;
+    private Vector3[] _targets;
     public int currentTarget;
 
-    private float _maxSpeed = 4.5f;
+    private float _maxSpeed = 5f;
     private float _banking = 0.1f;
     private Rigidbody _rb;
 
     private void Awake()
     {
+        _targets = new Vector3[targetHolder.childCount];
+        for (int i = 0; i < targetHolder.childCount; i++)
+        {
+            _targets[i] = targetHolder.GetChild(i).transform.position;
+        }
         if (GetComponent<Rigidbody>()) _rb = GetComponent<Rigidbody>();
         else
         {
@@ -23,7 +29,7 @@ public class PlayerAI : MonoBehaviour
 
     private void Update()
     {
-        MoveToPoint(targets[currentTarget].position);
+        MoveToPoint(_targets[currentTarget]);
     }
 
     #region Behaviours
@@ -39,15 +45,14 @@ public class PlayerAI : MonoBehaviour
     private void MoveToPoint(Vector3 targetPos)
     {
         Vector3 point = CalculateForces(targetPos);
-        _rb.AddForce(point);
-        _rb.velocity = Vector3.ClampMagnitude(_rb.velocity,_maxSpeed);
+        _rb.velocity = Vector3.ClampMagnitude(_rb.velocity + point, _maxSpeed);
         
-        Vector3 tempUp = Vector3.Lerp(transform.up, Vector3.up + (targetPos - transform.position), Time.deltaTime * 1.0f);
+        Vector3 tempUp = Vector3.Lerp(transform.up, Vector3.up + (targetPos - transform.position), Time.deltaTime * 10.0f);
         transform.LookAt(transform.position + _rb.velocity, tempUp);
 
-        if (Vector3.Distance(this.transform.position, targets[currentTarget].position) <= 1f)
+        if (Vector3.Distance(this.transform.position, _targets[currentTarget]) <= 2f)
         {
-            if (currentTarget < targets.Length - 1)
+            if (currentTarget < _targets.Length - 1)
             {
                 currentTarget++;
             }
