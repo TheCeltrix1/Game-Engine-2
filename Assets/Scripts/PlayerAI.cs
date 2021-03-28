@@ -50,7 +50,6 @@ public class PlayerAI : MonoBehaviour
         _rb.AddForce(point * _acceleration * Time.deltaTime);
         _rb.velocity = Vector3.ClampMagnitude(_rb.velocity, maxSpeed);
 
-
         if (Vector3.Distance(this.transform.position, _targets[currentTarget]) <= 2f)
         {
             if (currentTarget < _targets.Length - 1)
