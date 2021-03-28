@@ -8,7 +8,7 @@ public class PlayerAI : MonoBehaviour
     private Vector3[] _targets;
     public int currentTarget;
 
-    private float _maxSpeed = 10f;
+    public float maxSpeed = 10f;
     private float _acceleration = 100f;
     private float _banking = 0.1f;
     private Rigidbody _rb;
@@ -38,7 +38,7 @@ public class PlayerAI : MonoBehaviour
     {
         Vector3 relativePos = targetPos - transform.position;
         relativePos.Normalize();
-        relativePos *= (_maxSpeed);
+        relativePos *= (maxSpeed);
 
         return relativePos - _rb.velocity;
     }
@@ -48,7 +48,7 @@ public class PlayerAI : MonoBehaviour
         Vector3 point = CalculateForces(targetPos);
         Bank(point * _acceleration * Time.deltaTime);
         _rb.AddForce(point * _acceleration * Time.deltaTime);
-        _rb.velocity = Vector3.ClampMagnitude(_rb.velocity, _maxSpeed);
+        _rb.velocity = Vector3.ClampMagnitude(_rb.velocity, maxSpeed);
 
 
         if (Vector3.Distance(this.transform.position, _targets[currentTarget]) <= 2f)
