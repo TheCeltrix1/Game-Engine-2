@@ -11,46 +11,43 @@ public class AIController : MonoBehaviour
     private Transform _targetTransform;
     private float _bypassAngle;
     private Vector3 _targetLocation;
-    private Rigidbody _rb;
-    private int _huntState;
-    private Rigidbody _targetRb;
-    private float _forwardTracking = 0.5f;
+    public Rigidbody rb;
+    private float _forwardTracking = 5f;
 
     void Awake()
     {
         if (!GetComponent<Rigidbody>()) gameObject.AddComponent<Rigidbody>();
-        _rb = gameObject.GetComponent<Rigidbody>();
-        _rb.useGravity = false;
+        rb = gameObject.GetComponent<Rigidbody>();
+        rb.useGravity = false;
         _targetTransform = _targetObj.transform;
         FindTarget();
         BypassTargetGeneration();
+        GetComponent<ObstacleAvoidance>().enabled = true;
     }
 
     void FindTarget()
     {
         //_targetObj = GameManager.NearestPlayer(this.gameObject);
-        _targetRb = _targetObj.GetComponent<Rigidbody>();
+        //_targetRb = _targetObj.GetComponent<Rigidbody>();
     }
 
-    void Update()
+    void FixedUpdate()
     {
         /*if (Vector3.Angle(_targetRb.velocity, _rb.velocity) >= 100)
         {
-            BypassTargetBehaviour();
+            FlyByBehaviour();
         }*/
-        BypassTargetBehaviour();
-
-        transform.LookAt(transform.position + _rb.velocity);
+        
+        FlyByBehaviour();
+        Banking();
     }
 
-    Vector3 CalculateForces(Vector3 targetPos)
+    public virtual Vector3 CalculateForces(Vector3 targetPos)
     {
-        Vector3 force = Vector3.zero;
-
         Vector3 relativePos = targetPos - transform.position;
         relativePos.Normalize();
         relativePos *= maxSpeed;
-        relativePos -= _rb.velocity;
+        relativePos -= rb.velocity;
 
         return relativePos;
     }
@@ -58,13 +55,18 @@ public class AIController : MonoBehaviour
     #region Behaviours
     void PursueTargetBehaviour()
     {
-        _rb.AddForce(CalculateForces(_targetTransform.position + (_targetTransform.forward * 5)));
+        rb.AddForce(CalculateForces(_targetTransform.position + (_targetTransform.forward * _forwardTracking)));
     }
 
-    void BypassTargetBehaviour()
+    void FlyByBehaviour()
     {
         if (Vector3.Distance(transform.position, _targetTransform.position + _targetLocation) <= 0.5f) BypassTargetGeneration();
-        _rb.AddForce(CalculateForces(_targetTransform.position +_targetLocation));
+        rb.AddForce(CalculateForces(_targetTransform.position + _targetLocation));
+    }
+
+    void Avoidance()
+    {
+
     }
 
     void BypassTargetGeneration()
@@ -76,17 +78,17 @@ public class AIController : MonoBehaviour
         _targetLocation = relativeAngle;
     }
 
+    void Banking()
+    {
+        //Vector3 bankingValue = (_targetLocation - _rb.velocity).normalized + (Vector3.up * 2);
+        transform.LookAt(transform.position + rb.velocity);
+        float turnAngle = Vector3.Angle(transform.forward,rb.velocity);
+        transform.Rotate(new Vector3(Mathf.Lerp(0,turnAngle,0.75f),0,0));
+    }
+
     void ShootTarget()
     {
         Debug.Log("Pew Pew!");
     }
     #endregion
-
-    private void OnDrawGizmos()
-    {
-        /*Gizmos.color = Color.red;
-        Gizmos.DrawCube(_targetTransform.position + _targetLocation, Vector3.one);
-        Gizmos.color = Color.blue;
-        Gizmos.DrawCube(_targetTransform.position, Vector3.one);*/
-    }
 }
