@@ -8,11 +8,15 @@ public class AIController : MonoBehaviour
     public float pointDistance = 5;
 
     public GameObject _targetObj;
-    private Transform _targetTransform;
-    private float _bypassAngle;
-    private Vector3 _targetLocation;
     public Rigidbody rb;
+
+    private float _bypassAngle;
     private float _forwardTracking = 5f;
+    private Vector3 _targetLocation;
+    private Transform _targetTransform;
+    private SphereCollider _areaTrigger;
+    private bool _avoid;
+    private GameObject _avoidObject;
 
     void Awake()
     {
@@ -20,9 +24,16 @@ public class AIController : MonoBehaviour
         rb = gameObject.GetComponent<Rigidbody>();
         rb.useGravity = false;
         _targetTransform = _targetObj.transform;
+
         FindTarget();
-        BypassTargetGeneration();
-        GetComponent<ObstacleAvoidance>().enabled = true;
+        //BypassTargetGeneration();
+        //GetComponent<ObstacleAvoidance>().enabled = true;
+        #region SphereTrigger
+        if (!GetComponent<SphereCollider>()) gameObject.AddComponent<SphereCollider>();
+        _areaTrigger = GetComponent<SphereCollider>();
+        _areaTrigger.isTrigger = true;
+        _areaTrigger.radius = _areaTrigger.radius * pointDistance;
+        #endregion
     }
 
     void FindTarget()
@@ -37,8 +48,10 @@ public class AIController : MonoBehaviour
         {
             FlyByBehaviour();
         }*/
-        
-        FlyByBehaviour();
+
+        //FlyByBehaviour();
+        if (_avoid) FlyByBehaviour(_avoidObject);
+        else PursueTargetBehaviour();
         Banking();
     }
 
@@ -55,21 +68,16 @@ public class AIController : MonoBehaviour
     #region Behaviours
     void PursueTargetBehaviour()
     {
-        rb.AddForce(CalculateForces(_targetTransform.position + (_targetTransform.forward * _forwardTracking)));
+        rb.AddForce(CalculateForces(_targetTransform.position /*+ (_targetTransform.forward * _forwardTracking)*/));
     }
 
-    void FlyByBehaviour()
+    void FlyByBehaviour(GameObject avoidObject)
     {
-        if (Vector3.Distance(transform.position, _targetTransform.position + _targetLocation) <= 0.5f) BypassTargetGeneration();
-        rb.AddForce(CalculateForces(_targetTransform.position + _targetLocation));
+        if (Vector3.Distance(transform.position, avoidObject.transform.position + _targetLocation) <= 0.5f) BypassTargetGeneration();
+        rb.AddForce(CalculateForces(avoidObject.transform.position + _targetLocation));
     }
 
-    void Avoidance()
-    {
-
-    }
-
-    void BypassTargetGeneration()
+    private void BypassTargetGeneration()
     {
         _bypassAngle = Random.Range(0, 360);
         Vector3 relativeAngle = Vector3.zero;
@@ -91,4 +99,15 @@ public class AIController : MonoBehaviour
         Debug.Log("Pew Pew!");
     }
     #endregion
+
+    private void OnTriggerStay(Collider other)
+    {
+        _avoid = true;
+        _avoidObject = other.gameObject;
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        _avoid = false;
+        //_avoidObject = _targetObj;
+    }
 }

@@ -67,7 +67,7 @@ public class ObstacleAvoidance : AIController
                 force += CalculateSceneAvoidanceForce(info);
             }
         }
-        Debug.Log("waepjoafw9jpjwfpaojwapfojpoawffwpajofawjpo");
+        Debug.Log(feelers.Length);
         return force;
     }
 
