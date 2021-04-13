@@ -16,23 +16,23 @@ public class AIController : MonoBehaviour
     private Transform _targetTransform;
     private SphereCollider _areaTrigger;
     private bool _avoid;
-    private GameObject _avoidObject;
+
+    [HideInInspector] public GameObject avoidObject;
 
     void Awake()
     {
         if (!GetComponent<Rigidbody>()) gameObject.AddComponent<Rigidbody>();
         rb = gameObject.GetComponent<Rigidbody>();
         rb.useGravity = false;
-        _targetTransform = _targetObj.transform;
 
         FindTarget();
-        //BypassTargetGeneration();
         //GetComponent<ObstacleAvoidance>().enabled = true;
+
         #region SphereTrigger
         if (!GetComponent<SphereCollider>()) gameObject.AddComponent<SphereCollider>();
         _areaTrigger = GetComponent<SphereCollider>();
         _areaTrigger.isTrigger = true;
-        _areaTrigger.radius = _areaTrigger.radius * pointDistance;
+        //_areaTrigger.radius = _areaTrigger.radius * transform.localScale.x;
         #endregion
     }
 
@@ -44,13 +44,8 @@ public class AIController : MonoBehaviour
 
     void FixedUpdate()
     {
-        /*if (Vector3.Angle(_targetRb.velocity, _rb.velocity) >= 100)
-        {
-            FlyByBehaviour();
-        }*/
-
-        //FlyByBehaviour();
-        if (_avoid) FlyByBehaviour(_avoidObject);
+        _targetTransform = _targetObj.transform;
+        if (_avoid) FlyByBehaviour(avoidObject);
         else PursueTargetBehaviour();
         Banking();
     }
@@ -103,7 +98,8 @@ public class AIController : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         _avoid = true;
-        _avoidObject = other.gameObject;
+        avoidObject = other.gameObject;
+        if (other.GetComponent<AIController>() && other.GetComponent<AIController>().avoidObject == this.gameObject) _avoid = false;
     }
     private void OnTriggerExit(Collider other)
     {
