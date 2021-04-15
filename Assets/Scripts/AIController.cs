@@ -47,7 +47,7 @@ public class AIController : MonoBehaviour
         _targetTransform = _targetObj.transform;
         if (_avoid) FlyByBehaviour(avoidObject);
         else PursueTargetBehaviour();
-        Banking();
+        Bank(_targetTransform.position);
     }
 
     public virtual Vector3 CalculateForces(Vector3 targetPos)
@@ -85,8 +85,13 @@ public class AIController : MonoBehaviour
     {
         //Vector3 bankingValue = (_targetLocation - _rb.velocity).normalized + (Vector3.up * 2);
         transform.LookAt(transform.position + rb.velocity);
-        float turnAngle = Vector3.Angle(transform.forward,rb.velocity);
+        float turnAngle = Vector3.Angle(transform.forward,rb.velocity * 100);
         transform.Rotate(new Vector3(Mathf.Lerp(0,turnAngle,0.75f),0,0));
+    }
+    private void Bank(Vector3 currentPoint)
+    {
+        Vector3 tempUp = Vector3.Lerp(Vector3.up, (Vector3.up + currentPoint).normalized, .75f);
+        transform.LookAt(transform.position + rb.velocity, tempUp);
     }
 
     void ShootTarget()
