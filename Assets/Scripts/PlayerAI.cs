@@ -7,6 +7,7 @@ public class PlayerAI : MonoBehaviour
     public Transform targetHolder;
     private Vector3[] _targets;
     public int currentTarget;
+    [HideInInspector] public bool finalPointReached;
 
     public float maxSpeed = 10f;
     private float _acceleration = 100f;
@@ -15,6 +16,7 @@ public class PlayerAI : MonoBehaviour
 
     private void Awake()
     {
+        finalPointReached = false;
         _targets = new Vector3[targetHolder.childCount];
         for (int i = 0; i < targetHolder.childCount; i++)
         {
@@ -26,6 +28,8 @@ public class PlayerAI : MonoBehaviour
             _rb = gameObject.AddComponent<Rigidbody>();
             _rb.useGravity = false;
         }
+        GameManager.AddPlayerObject(this.gameObject);
+
     }
 
     private void Update()
@@ -52,6 +56,7 @@ public class PlayerAI : MonoBehaviour
 
         if (Vector3.Distance(this.transform.position, _targets[currentTarget]) <= 2f)
         {
+            if (currentTarget == _targets.Length - 1) finalPointReached = true;
             if (currentTarget < _targets.Length - 1)
             {
                 currentTarget++;

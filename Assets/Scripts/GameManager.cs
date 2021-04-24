@@ -1,16 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static List<GameObject> players = new List<GameObject>();
+    public static bool endScene = false;
     private static GameManager _instance;
     private static int _sceneNumber = 0;
     private static Rigidbody _rb;
 
     #region Scene1
     private float _cameraVelocity = 0.5f;
+    #endregion
+
+    #region Scene3
+    private float _scene3TimerCurrentTime = 0;
+    private float _scene3TimerTotalTime = 5;
     #endregion
 
     public static GameManager Instance { get { return _instance; } }
@@ -26,8 +33,49 @@ public class GameManager : MonoBehaviour
         else
         {
             _instance = this;
+            DontDestroyOnLoad(this.gameObject);
         }
-        Scene1();
+        _sceneNumber = SceneManager.GetActiveScene().buildIndex;
+    }
+
+    private void Update()
+    {
+        CheckSceneEnd();
+        switch (_sceneNumber)
+        {
+            case 0:
+                Scene1();
+                break;
+
+            case 1:
+
+                break;
+
+            case 2:
+                _scene3TimerCurrentTime += Time.deltaTime;
+                if (_scene3TimerCurrentTime >= _scene3TimerTotalTime) NextScene();
+                break;
+
+            case 3:
+                
+                break;
+
+            case 4:
+                
+                break;
+
+            case 5:
+                
+                break;
+
+            case 6:
+                
+                break;
+
+            default:
+                break;
+        }
+        if (endScene) NextScene();
     }
 
     #region PlayerObjects
@@ -46,12 +94,12 @@ public class GameManager : MonoBehaviour
         float dist = Mathf.Infinity;
         float distance;
         GameObject nearest = players[0];
-        foreach (GameObject gameObject in players)
+        foreach (GameObject player in players)
         {
-            distance = Vector3.Distance(gameObject.transform.position, obj.transform.position);
+            distance = Vector3.Distance(player.transform.position, obj.transform.position);
             if (distance <= dist)
             {
-                nearest = gameObject;
+                nearest = player;
             }
         }
         return nearest;
@@ -60,21 +108,29 @@ public class GameManager : MonoBehaviour
 
     public static void NextScene()
     {
+        endScene = false;
+        players.Clear();
         _sceneNumber++;
-        switch (_sceneNumber)
-        {
-            case 1:
-
-                break;
-
-            default:
-                break;
-        }
-
+        if (_sceneNumber >= SceneManager.sceneCountInBuildSettings) Application.Quit();
+        else SceneManager.LoadScene(_sceneNumber);
     }
 
     private void Scene1()
     {
         _rb.velocity = new Vector3(0,0, -_cameraVelocity);
+    }
+
+    private void CheckSceneEnd() 
+    {
+        int i = 0;
+        foreach (GameObject item in players)
+        {
+            if (item.GetComponent<PlayerAI>().finalPointReached)
+            {
+                i++;
+                if (i == (players.Count - 1)) endScene = true;
+            }
+            else break;
+        }
     }
 }
