@@ -97,9 +97,11 @@ public class GameManager : MonoBehaviour
         foreach (GameObject player in players)
         {
             distance = Vector3.Distance(player.transform.position, obj.transform.position);
+            //Debug.Log($"Distance: {distance} DIST {dist}");
             if (distance <= dist)
             {
                 nearest = player;
+                dist = distance;
             }
         }
         return nearest;

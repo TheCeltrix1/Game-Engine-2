@@ -11,7 +11,6 @@ public class PlayerAI : MonoBehaviour
 
     public float maxSpeed = 10f;
     private float _acceleration = 100f;
-    private float _banking = 0.1f;
     private Rigidbody _rb;
 
     private void Awake()

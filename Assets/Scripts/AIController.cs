@@ -6,12 +6,13 @@ public class AIController : MonoBehaviour
 {
     public float maxSpeed = 5;
     public float pointDistance = 5;
+    public bool fixedTargets;
 
-    public GameObject _targetObj;
+    public GameObject targetObj;
     public Rigidbody rb;
 
     private float _bypassAngle;
-    private float _forwardTracking = 5f;
+    //private float _forwardTracking = 5f;
     private Vector3 _targetLocation;
     private Transform _targetTransform;
     private SphereCollider _areaTrigger;
@@ -25,7 +26,7 @@ public class AIController : MonoBehaviour
         rb = gameObject.GetComponent<Rigidbody>();
         rb.useGravity = false;
 
-        FindTarget();
+        //FindTarget();
         //GetComponent<ObstacleAvoidance>().enabled = true;
 
         #region SphereTrigger
@@ -36,6 +37,12 @@ public class AIController : MonoBehaviour
         #endregion
     }
 
+    private void Start()
+    {
+        if (!fixedTargets || targetObj == null) targetObj = GameManager.NearestPlayer(this.gameObject);
+        Debug.Log(targetObj.name);
+    }
+
     void FindTarget()
     {
         //_targetObj = GameManager.NearestPlayer(this.gameObject);
@@ -44,7 +51,7 @@ public class AIController : MonoBehaviour
 
     void FixedUpdate()
     {
-        _targetTransform = _targetObj.transform;
+        _targetTransform = targetObj.transform;
         if (_avoid) FlyByBehaviour(avoidObject);
         else PursueTargetBehaviour();
         Bank(_targetTransform.position);
