@@ -55,7 +55,7 @@ public class ObstacleAvoidance : AIController
         }
     }
 
-    public override Vector3 CalculateForces(Vector3 targetPos)
+    /*public Override Vector3 CalculateForces(Vector3 targetPos)
     {
         Vector3 force = Vector3.zero;
 
@@ -69,7 +69,7 @@ public class ObstacleAvoidance : AIController
         }
         Debug.Log(feelers.Length);
         return force;
-    }
+    }*/
 
     void UpdateFeeler(int feelerNum, Quaternion localRotation, float baseDepth, FeelerInfo.FeeelerType feelerType)
     {

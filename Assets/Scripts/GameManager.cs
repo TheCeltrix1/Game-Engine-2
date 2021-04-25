@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     public static bool endScene = false;
     private static GameManager _instance;
     private static int _sceneNumber = 0;
-    private static Rigidbody _rb;
+    private Rigidbody _rb;
 
     #region Scene1
     private float _cameraVelocity = 0.5f;
@@ -25,7 +25,6 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        _rb = Camera.main.gameObject.GetComponent<Rigidbody>();
         if (_instance != null && _instance != this)
         {
             Destroy(this.gameObject);
@@ -41,35 +40,35 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         CheckSceneEnd();
-        switch (_sceneNumber)
+        switch (SceneManager.GetActiveScene().name)
         {
-            case 0:
+            case "Scene1":
                 Scene1();
                 break;
 
-            case 1:
+            case "Scene2":
 
                 break;
 
-            case 2:
+            case "Scene3":
                 _scene3TimerCurrentTime += Time.deltaTime;
                 if (_scene3TimerCurrentTime >= _scene3TimerTotalTime) NextScene();
                 break;
 
-            case 3:
-                
+            case "Scene4":
+
                 break;
 
-            case 4:
-                
+            case "Scene5":
+
                 break;
 
-            case 5:
-                
+            case "Scene6":
+
                 break;
 
-            case 6:
-                
+            case "Scene7":
+
                 break;
 
             default:
@@ -119,6 +118,7 @@ public class GameManager : MonoBehaviour
 
     private void Scene1()
     {
+        _rb = Camera.main.gameObject.GetComponent<Rigidbody>();
         _rb.velocity = new Vector3(0,0, -_cameraVelocity);
     }
 

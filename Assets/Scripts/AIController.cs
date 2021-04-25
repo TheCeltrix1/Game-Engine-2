@@ -10,7 +10,13 @@ public class AIController : MonoBehaviour
 
     public GameObject targetObj;
     public Rigidbody rb;
+    public GameObject bulletPewPew;
+    public float fireRate = 0.5f;
 
+    private float _randomFireOffset;
+    private bool _canFire;
+    private float _fireAngle = 1f;
+    private float _bulletSpeed = 40;
     private float _bypassAngle;
     //private float _forwardTracking = 5f;
     private Vector3 _targetLocation;
@@ -26,14 +32,12 @@ public class AIController : MonoBehaviour
         rb = gameObject.GetComponent<Rigidbody>();
         rb.useGravity = false;
 
-        //FindTarget();
-        //GetComponent<ObstacleAvoidance>().enabled = true;
-
         #region SphereTrigger
         if (!GetComponent<SphereCollider>()) gameObject.AddComponent<SphereCollider>();
         _areaTrigger = GetComponent<SphereCollider>();
         _areaTrigger.isTrigger = true;
         //_areaTrigger.radius = _areaTrigger.radius * transform.localScale.x;
+        _randomFireOffset = Random.Range(0,fireRate);
         #endregion
     }
 
@@ -41,12 +45,7 @@ public class AIController : MonoBehaviour
     {
         if (!fixedTargets || targetObj == null) targetObj = GameManager.NearestPlayer(this.gameObject);
         Debug.Log(targetObj.name);
-    }
-
-    void FindTarget()
-    {
-        //_targetObj = GameManager.NearestPlayer(this.gameObject);
-        //_targetRb = _targetObj.GetComponent<Rigidbody>();
+        StartCoroutine(FireTimer());
     }
 
     void FixedUpdate()
@@ -57,7 +56,7 @@ public class AIController : MonoBehaviour
         Bank(_targetTransform.position);
     }
 
-    public virtual Vector3 CalculateForces(Vector3 targetPos)
+    public Vector3 CalculateForces(Vector3 targetPos)
     {
         Vector3 relativePos = targetPos - transform.position;
         relativePos.Normalize();
@@ -71,6 +70,11 @@ public class AIController : MonoBehaviour
     void PursueTargetBehaviour()
     {
         rb.AddForce(CalculateForces(_targetTransform.position /*+ (_targetTransform.forward * _forwardTracking)*/));
+        if (Vector3.Angle(rb.velocity.normalized, transform.forward) <= _fireAngle && _canFire)
+        {
+            ShootTarget();
+            _canFire = false;
+        }
     }
 
     void FlyByBehaviour(GameObject avoidObject)
@@ -92,9 +96,10 @@ public class AIController : MonoBehaviour
     {
         //Vector3 bankingValue = (_targetLocation - _rb.velocity).normalized + (Vector3.up * 2);
         transform.LookAt(transform.position + rb.velocity);
-        float turnAngle = Vector3.Angle(transform.forward,rb.velocity * 100);
-        transform.Rotate(new Vector3(Mathf.Lerp(0,turnAngle,0.75f),0,0));
+        float turnAngle = Vector3.Angle(transform.forward, rb.velocity * 100);
+        transform.Rotate(new Vector3(Mathf.Lerp(0, turnAngle, 0.75f), 0, 0));
     }
+
     private void Bank(Vector3 currentPoint)
     {
         Vector3 tempUp = Vector3.Lerp(Vector3.up, (Vector3.up + currentPoint).normalized, .75f);
@@ -103,19 +108,33 @@ public class AIController : MonoBehaviour
 
     void ShootTarget()
     {
-        Debug.Log("Pew Pew!");
+        GameObject obj = Instantiate(bulletPewPew, transform.position, transform.rotation);
+        obj.GetComponent<Rigidbody>().velocity = transform.forward * _bulletSpeed;
     }
     #endregion
 
+    IEnumerator FireTimer()
+    {
+        while (true) 
+        {
+            yield return new WaitForSeconds(fireRate + _randomFireOffset);
+            _canFire = true;
+            _randomFireOffset = 0;
+        }
+    }
+
     private void OnTriggerStay(Collider other)
     {
-        _avoid = true;
-        avoidObject = other.gameObject;
-        if (other.GetComponent<AIController>() && other.GetComponent<AIController>().avoidObject == this.gameObject) _avoid = false;
+        if (!other.GetComponent<BulletFire>())
+        {
+            _avoid = true;
+            avoidObject = other.gameObject;
+            if (other.GetComponent<AIController>() && other.GetComponent<AIController>().avoidObject == this.gameObject) _avoid = false;
+        }
     }
     private void OnTriggerExit(Collider other)
     {
-        _avoid = false;
+        if (!other.GetComponent<BulletFire>()) _avoid = false;
         //_avoidObject = _targetObj;
     }
 }

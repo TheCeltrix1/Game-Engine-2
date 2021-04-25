@@ -46,8 +46,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxSpeed: 10
   pointDistance: 5
-  _targetObj: {fileID: 0}
+  fixedTargets: 0
+  targetObj: {fileID: 0}
   rb: {fileID: 0}
+  bulletPewPew: {fileID: 2633702716999484993, guid: f05326c25c73dda409804d7743cd580c,
+    type: 3}
+  avoidObject: {fileID: 0}
 --- !u!1001 &3684014750617868722
 PrefabInstance:
   m_ObjectHideFlags: 0

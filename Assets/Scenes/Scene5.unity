@@ -359,7 +359,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_FillRect: {fileID: 1107242459}
   m_HandleRect: {fileID: 0}
-  m_Direction: 0
+  m_Direction: 1
   m_MinValue: 0
   m_MaxValue: 0.5
   m_WholeNumbers: 0
@@ -476,6 +476,11 @@ PrefabInstance:
       propertyPath: targetHolder
       value: 
       objectReference: {fileID: 643338326}
+    - target: {fileID: 8950079707917585322, guid: bbd775f580bdb374484d7755f07b9510,
+        type: 3}
+      propertyPath: maxSpeed
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 8950079707917585323, guid: bbd775f580bdb374484d7755f07b9510,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -636,6 +641,11 @@ PrefabInstance:
       propertyPath: targetHolder
       value: 
       objectReference: {fileID: 765170795}
+    - target: {fileID: 4705912776093599928, guid: 6bf63eb7ac13996489057a8454355e1d,
+        type: 3}
+      propertyPath: maxSpeed
+      value: 20
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6bf63eb7ac13996489057a8454355e1d, type: 3}
 --- !u!1 &765170794
@@ -938,6 +948,11 @@ PrefabInstance:
       propertyPath: targetHolder
       value: 
       objectReference: {fileID: 2122919669}
+    - target: {fileID: 4457931332381056624, guid: c43a7e22f4bc4ad47a1744b5e3f24da1,
+        type: 3}
+      propertyPath: maxSpeed
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 4457931332381056625, guid: c43a7e22f4bc4ad47a1744b5e3f24da1,
         type: 3}
       propertyPath: m_LocalPosition.x
