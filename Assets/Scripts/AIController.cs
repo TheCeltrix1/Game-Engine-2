@@ -44,7 +44,6 @@ public class AIController : MonoBehaviour
     private void Start()
     {
         if (!fixedTargets || targetObj == null) targetObj = GameManager.NearestPlayer(this.gameObject);
-        Debug.Log(targetObj.name);
         StartCoroutine(FireTimer());
     }
 

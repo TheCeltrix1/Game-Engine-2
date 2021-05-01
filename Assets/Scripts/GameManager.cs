@@ -20,6 +20,12 @@ public class GameManager : MonoBehaviour
     private float _scene3TimerTotalTime = 5;
     #endregion
 
+    #region Scene7
+    private ParticleSystem _boomBoom;
+    private CamShake _cameraShake;
+    private bool _once = false;
+    #endregion
+
     public static GameManager Instance { get { return _instance; } }
 
 
@@ -68,7 +74,14 @@ public class GameManager : MonoBehaviour
                 break;
 
             case "Scene7":
-
+                if (endScene && !_once)
+                {
+                    _boomBoom = Camera.main.gameObject.GetComponentInChildren<ParticleSystem>();
+                    _boomBoom.Play();
+                    _cameraShake = FindObjectOfType<CamShake>();
+                    StartCoroutine(_cameraShake.Shake(0.1f, 0.5f));
+                    _once = true;
+                }
                 break;
 
             default:
