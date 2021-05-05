@@ -7,6 +7,7 @@ public class TurretLooking : MonoBehaviour
     public Transform target;
     public float clampDegrees;
     public Transform[] barrelLocations;
+    public AudioSource bulletSFX;
     public GameObject bulletPewPew;
     private float _bulletSpeed = 40;
     private float _fireRate = 0.1f;
@@ -24,6 +25,7 @@ public class TurretLooking : MonoBehaviour
         transform.rotation = face;
         if (_fire >= _fireRate)
         {
+            bulletSFX.Play();
             GameObject obj = Instantiate(bulletPewPew, barrelLocations[_fireLocation].position, transform.rotation);
             obj.GetComponent<Rigidbody>().velocity = transform.forward * _bulletSpeed;
             _fire = 0;

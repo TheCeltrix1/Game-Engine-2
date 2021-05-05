@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 {
     public static List<GameObject> players = new List<GameObject>();
     public static bool endScene = false;
+    public AudioSource BGM;
     private static GameManager _instance;
     private static int _sceneNumber = 0;
     private Rigidbody _rb;
@@ -21,9 +22,11 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region Scene7
+    private float _explosionTimer = 1f;
     private ParticleSystem _boomBoom;
     private CamShake _cameraShake;
     private bool _once = false;
+    private bool _onceTwo = false;
     #endregion
 
     public static GameManager Instance { get { return _instance; } }
@@ -40,13 +43,16 @@ public class GameManager : MonoBehaviour
             _instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
+        BGM.Play();
+        BGM.loop = true;
         _sceneNumber = SceneManager.GetActiveScene().buildIndex;
     }
 
     private void Update()
     {
         CheckSceneEnd();
-        switch (SceneManager.GetActiveScene().name)
+        string name = SceneManager.GetActiveScene().name;
+        switch (name)
         {
             case "Scene1":
                 Scene1();
@@ -78,16 +84,27 @@ public class GameManager : MonoBehaviour
                 {
                     _boomBoom = Camera.main.gameObject.GetComponentInChildren<ParticleSystem>();
                     _boomBoom.Play();
+                    Camera.main.gameObject.GetComponentInChildren<AudioSource>().Play();
                     _cameraShake = FindObjectOfType<CamShake>();
                     StartCoroutine(_cameraShake.Shake(0.1f, 0.5f));
                     _once = true;
                 }
+                if (_once)
+                {
+                    if(_explosionTimer <= 0) _onceTwo = true;
+                    _explosionTimer -= Time.deltaTime;
+                }
+                break;
+
+            case "Scene8":
+                Application.Quit();
                 break;
 
             default:
                 break;
         }
-        if (endScene) NextScene();
+        if (endScene && name != "Scene7") NextScene();
+        else if (name == "Scene7" && _onceTwo) NextScene();
     }
 
     #region PlayerObjects

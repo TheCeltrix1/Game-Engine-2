@@ -8,6 +8,8 @@ public class AIController : MonoBehaviour
     public float pointDistance = 5;
     public bool fixedTargets;
 
+    public AudioSource engines;
+    public AudioSource bulletFiring;
     public GameObject targetObj;
     public Rigidbody rb;
     public GameObject bulletPewPew;
@@ -31,6 +33,10 @@ public class AIController : MonoBehaviour
         if (!GetComponent<Rigidbody>()) gameObject.AddComponent<Rigidbody>();
         rb = gameObject.GetComponent<Rigidbody>();
         rb.useGravity = false;
+
+        bulletFiring.loop = false;
+        engines.loop = true;
+        engines.Play();
 
         #region SphereTrigger
         if (!GetComponent<SphereCollider>()) gameObject.AddComponent<SphereCollider>();
@@ -107,6 +113,7 @@ public class AIController : MonoBehaviour
 
     void ShootTarget()
     {
+        bulletFiring.Play();
         GameObject obj = Instantiate(bulletPewPew, transform.position, transform.rotation);
         obj.GetComponent<Rigidbody>().velocity = transform.forward * _bulletSpeed;
     }
