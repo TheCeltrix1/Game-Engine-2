@@ -22,7 +22,7 @@ Technical shizz:
 
 YouTube Link
 ------
-[![IMAGE ALT TEXT HERE]](https://youtu.be/JM3RaLeN9w0)
+[![IMAGE ALT TEXT HERE](https://i9.ytimg.com/vi/JM3RaLeN9w0/mq2.jpg?sqp=CLSsnoUG&rs=AOn4CLAnq78cRVn9i0a4A3Lnu_sGRMhlAQ)](https://youtu.be/JM3RaLeN9w0)
 
 All models made by me using Maya
 
